@@ -16,6 +16,8 @@ body {
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
   line-height: 1.5;
+  background: rgb(242, 237, 237);
+  
 }
 img {
   max-width: 100%;

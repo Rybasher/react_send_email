@@ -8,45 +8,37 @@ import MaskedInput from "react-text-mask";
 
 const FormComponent = () => {
     
-const phoneRegExp = [
-    "(",
-    /[1-9]/,
-    /\d/,
-    /\d/,
-    ")",
-    " ",
-    /\d/,
-    /\d/,
-    /\d/,
-    "-",
-    /\d/,
-    /\d/,
-    /\d/,
-    /\d/
-  ];
-const validationSchema = yup.object({
+  const phoneRegExp = [
+      "(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-",/\d/, /\d/, /\d/, /\d/
+    ];
+
+  const validationSchema = yup.object({
     email: yup
       .string('Enter your email')
       .email('Enter a valid email')
       .required('Email is required'),
-    phone: yup
-      .string().required('Required')
+
   });
   const [emailMess, setMessage] = useState('');
 
   const sendData = async (values) => {
     
-    await fetch(`${process.env.REACT_APP_URL}/send_email`,
+    await fetch('http://127.0.0.1:8000/send_email',
     {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         method: "POST",
-        body: JSON.stringify(values)
+        body: JSON.stringify({
+          from_email: values.email,
+          subject: values.subject,
+          content: values.message
+        })
     })
     .then((res) => { 
-        setMessage(res)
+        console.log(res);
+        setMessage("Message sent");
     })
     .catch(function(res){ console.log(res) })
   };
@@ -118,22 +110,27 @@ const field = fieldsArray.map((element) => {
             
             <form className='contact-form' onSubmit={formik.handleSubmit}>
                 {field}
-                {/* <div className='form-group'> */}
-                <textarea name='message' className='text-area'
-                onChange={formik.handleChange}
-                value={formik.values.message}
-                id='message' placeholder=" "/>
-                {/* <label className='form-group__label'>message</label> */}
-                <p className='form-group__error'>{formik.errors.message}</p>
-            {/* </div> */}
+                <div className='form-group area'>
+                  <textarea name='message' className='form-group__input'
+                  onChange={formik.handleChange}
+                  value={formik.values.message}
+                  id='message' placeholder=" "/>
+                  <label className='form-group__label'>Message</label>
+                </div>
+                
                 <footer className='form-footer'>
-                <button type="submit">Submit</button> 
-                <button type='button' onClick={formik.handleReset}>Reset</button>
+                  <div className='form-buttons'>
+                    <button type="submit" className='form-buttons__submit'>Submit message</button> 
+                    <button type='button' className='form-buttons__reset' onClick={formik.handleReset}>Reset</button>
+                  </div>
+               
                 </footer>
             </form>
                
             </div>
-            <p>{emailMess}</p>
+            <footer className='container-footer'>
+              <p>{emailMess}</p>
+            </footer>
             
         </div>
     </section>
